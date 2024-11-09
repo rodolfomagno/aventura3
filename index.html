@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Jornada do Empreendedor</title>
+    <style>
+        /* ... (previous styles remain the same) ... */
+    </style>
+</head>
+<body>
+    <!-- ... (previous HTML structure remains the same) ... -->
+
+    <script>
+        let money = 10000;
+        let productQuality = 0;
+        let customers = 0;
+        let reputation = 50;
+        let employees = 0;
+        let currentScene = 'start';
+        let sceneHistory = [];
+        let achievements = [];
+
+        const scenes = {
+            start: {
+                text: "Você é um jovem empreendedor com uma ideia inovadora e $10.000 economizados. Como você quer começar?",
+                choices: [
+                    { text: "Investir tudo no desenvolvimento do produto", nextScene: "fullProduct" },
+                    { text: "Fazer um MVP (Produto Mínimo Viável)", nextScene: "mvp" },
+                    { text: "Buscar financiamento com amigos e família", nextScene: "friendsAndFamily" },
+                    { text: "Participar de um programa de aceleração", nextScene: "accelerator" }
+                ]
+            },
+            // ... (previous scenes remain the same) ...
+            accelerator: {
+                text: "Você se inscreve em um programa de aceleração de startups. Após uma seleção rigorosa, sua startup é aceita! O que você quer focar durante o programa?",
+                choices: [
+                    { text: "Desenvolvimento de produto e tecnologia", nextScene: "acceleratorProduct" },
+                    { text: "Estratégia de negócios e modelagem", nextScene: "acceleratorBusiness" },
+                    { text: "Networking e busca por investidores", nextScene: "acceleratorNetworking" }
+                ],
+                onEnter: () => {
+                    reputation += 20;
+                }
+            },
+            acceleratorProduct: {
+                text: "Com a orientação dos mentores, você aprimora significativamente seu produto. No Demo Day, os investidores ficam impressionados com a tecnologia. O que você faz agora?",
+                choices: [
+                    { text: "Aceitar uma oferta de investimento de $500.000 por 20% da empresa", nextScene: "bigInvestment" },
+                    { text: "Recusar o investimento e buscar crescimento orgânico", nextScene: "organicGrowth" },
+                    { text: "Negociar termos melhores com os investidores", nextScene: "negotiateTerms" }
+                ],
+                onEnter: () => {
+                    productQuality += 30;
+                }
+            },
+            acceleratorBusiness: {
+                text: "Você refina seu modelo de negócios e estratégia de go-to-market. Sua startup agora tem um plano sólido. Qual é o próximo passo?",
+                choices: [
+                    { text: "Lançar uma campanha de marketing agressiva", nextScene: "aggressiveMarketing" },
+                    { text: "Focar em parcerias estratégicas", nextScene: "strategicPartnerships" },
+                    { text: "Expandir para um novo mercado", nextScene: "marketExpansion" }
+                ],
+                onEnter: () => {
+                    reputation += 10;
+                    money += 5000; // Small grant from the accelerator
+                }
+            },
+            acceleratorNetworking: {
+                text: "Você faz conexões valiosas durante o programa. Um investidor anjo está interessado em sua startup. O que você propõe?",
+                choices: [
+                    { text: "Pedir $200.000 por 10% da empresa", nextScene: "angelInvestment" },
+                    { text: "Propor uma parceria estratégica sem investimento", nextScene: "strategicPartnership" },
+                    { text: "Pedir mentoria em vez de dinheiro", nextScene: "mentorship" }
+                ],
+                onEnter: () => {
+                    reputation += 15;
+                }
+            },
+            bigInvestment: {
+                text: "Com $500.000 no banco, sua startup está pronta para crescer. Qual área você prioriza?",
+                choices: [
+                    { text: "Expandir a equipe de desenvolvimento", nextScene: "expandTeam" },
+                    { text: "Investir em marketing e aquisição de clientes", nextScene: "marketingPush" },
+                    { text: "Abrir um escritório em um hub de tecnologia", nextScene: "techHub" }
+                ],
+                onEnter: () => {
+                    money += 500000;
+                    reputation += 30;
+                }
+            },
+            organicGrowth: {
+                text: "Você decide crescer organicamente. É um caminho mais lento, mas você mantém o controle. Como você planeja gerar receita?",
+                choices: [
+                    { text: "Oferecer serviços de consultoria relacionados ao seu produto", nextScene: "consultingServices" },
+                    { text: "Lançar uma versão freemium do produto", nextScene: "freemiumModel" },
+                    { text: "Focar em um nicho de mercado específico", nextScene: "nicheMarket" }
+                ],
+                onEnter: () => {
+                    reputation += 5;
+                }
+            },
+            negotiateTerms: {
+                text: "Você volta à mesa de negociações. Os investidores estão dispostos a ajustar a oferta. Qual termo você prioriza?",
+                choices: [
+                    { text: "Menor diluição (15% por $500.000)", nextScene: "lessDilution" },
+                    { text: "Mais dinheiro ($750.000 por 25%)", nextScene: "moreMoney" },
+                    { text: "Manter controle do conselho", nextScene: "boardControl" }
+                ]
+            },
+            expandTeam: {
+                text: "Você contrata mais desenvolvedores e designers. A equipe está animada com os novos projetos. Qual será o foco?",
+                choices: [
+                    { text: "Desenvolver novos recursos inovadores", nextScene: "newFeatures" },
+                    { text: "Melhorar a escalabilidade e performance", nextScene: "scaleProduct" },
+                    { text: "Criar uma linha de produtos complementares", nextScene: "productLine" }
+                ],
+                onEnter: () => {
+                    employees += 10;
+                    money -= 200000;
+                    productQuality += 20;
+                }
+            },
+            marketingPush: {
+                text: "Sua campanha de marketing gera muito burburinho. As inscrições para o produto disparam. Como você lida com o crescimento rápido?",
+                choices: [
+                    { text: "Contratar rapidamente para atender à demanda", nextScene: "rapidHiring" },
+                    { text: "Implementar uma lista de espera para controlar o crescimento", nextScene: "waitlist" },
+                    { text: "Aumentar os preços para desacelerar o crescimento", nextScene: "increasePrice" }
+                ],
+                onEnter: () => {
+                    money -= 250000;
+                    customers += 1000;
+                    reputation += 20;
+                }
+            },
+            techHub: {
+                text: "Seu novo escritório em um hub de tecnologia atrai talentos e atenção. Uma grande empresa de tecnologia notou vocês. O que você faz?",
+                choices: [
+                    { text: "Propor uma parceria estratégica", nextScene: "bigTechPartnership" },
+                    { text: "Manter distância para evitar ser ofuscado", nextScene: "stayIndependent" },
+                    { text: "Sondar possibilidades de aquisição", nextScene: "acquisitionTalks" }
+                ],
+                onEnter: () => {
+                    money -= 100000;
+                    reputation += 25;
+                    employees += 5;
+                }
+            }
+            // Add more scenes as needed
+        };
+
+        const achievementsList = {
+            bootstrapper: "Bootstrapper: Conseguiu financiamento com amigos e família",
+            productLauncher: "Lançador de Produto: Lançou seu primeiro produto no mercado",
+            firstCustomers: "Primeiros Clientes: Conquistou seus primeiros 100 clientes",
+            qualityGuru: "Guru da Qualidade: Atingiu 90% de qualidade do produto",
+            moneyMaker: "Fazedor de Dinheiro: Acumulou $100.000 em caixa",
+            teamBuilder: "Construtor de Equipes: Contratou 10 funcionários",
+            accelerated: "Acelerado: Participou de um programa de aceleração",
+            bigLeague: "Grande Liga: Recebeu um investimento de mais de $500.000",
+            innovator: "Inovador: Desenvolveu recursos inovadores no produto",
+            marketExpander: "Expansor de Mercado: Expandiu para um novo mercado"
+        };
+
+        // ... (previous functions remain the same) ...
+
+        function checkAchievements() {
+            if (money >= 100000 && !achievements.includes('moneyMaker')) {
+                achievements.push('moneyMaker');
+            }
+            if (productQuality >= 90 && !achievements.includes('qualityGuru')) {
+                achievements.push('qualityGuru');
+            }
+            if (customers >= 100 && !achievements.includes('firstCustomers')) {
+                achievements.push('firstCustomers');
+            }
+            if (employees >= 10 && !achievements.includes('teamBuilder')) {
+                achievements.push('teamBuilder');
+            }
+            if (currentScene === 'accelerator' && !achievements.includes('accelerated')) {
+                achievements.push('accelerated');
+            }
+            if (money >= 500000 && !achievements.includes('bigLeague')) {
+                achievements.push('bigLeague');
+            }
+            // Add more achievement checks here
+            updateAchievements();
+        }
+
+        // ... (remaining functions stay the same) ...
+
+        // Iniciar o jogo
+        renderScene('start');
+    </script>
+</body>
+</html>
